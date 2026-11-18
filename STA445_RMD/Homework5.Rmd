@@ -1,0 +1,157 @@
+---
+title: "Homework 5"
+author: "Corey Ingram"
+date: "2026-10-26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+
+1
+
+Convert the following to date or date/time objects.
+
+a) September 13, 2010.
+
+b) Sept 13, 2010.
+
+c) Sep 13, 2010.
+
+d) S 13, 2010. Comment on the month abbreviation needs.
+
+e) 07-Dec-1941.
+
+f) 1-5-1998. Comment on why you might be wrong.
+
+g) 21-5-1998. Comment on why you know you are correct.
+
+h) 2020-May-5 10:30 am
+
+i) 2020-May-5 10:30 am PDT (ex Seattle)
+
+j) 2020-May-5 10:30 am AST (ex Puerto Rico)
+
+1a
+```{r}
+a <- ymd("2010-9-13")
+format(a, "%B %d, %Y")
+```
+
+1b
+```{r}
+b <- ymd("2010-9-13")
+format(b, "%bt %d, %Y")
+```
+r does not recognize Sept, only September or Sep so I put a t after %b
+
+1c
+```{r}
+c <- ymd("2010-9-13")
+format(c, "%b %d, %Y")
+```
+
+1d
+```{r}
+d <- ymd("2010-9-13")
+format(d, "S %d, %Y")
+```
+Can't get the month to abbreviate to S so I left out the format convertor and instead put an S
+
+
+1e
+```{r}
+e<- ymd("1941-12-07")
+format(e, "%d-%b-%Y")
+```
+
+1f
+```{r}
+f <- mdy("1-5-1998")
+format(f, "%m-%d-%Y")
+```
+I might be wrong because I don't know whether the month is supposed to be January or May
+
+1g
+```{r}
+g <- ymd("1998-5-21")
+format(g, "%d-%m-%Y")
+```
+You can't confuse month and day with this problem
+
+1h
+```{r}
+h <- ymd_hm("2020-5-5 10:30 AM")
+format(h, "%Y-%B-%d %I:%M %p")
+```
+
+1i
+```{r}
+i <- ymd_hm("2020-5-5 10:30 AM", tz='America/Los_Angeles')
+format(i, "%Y-%B-%d %I:%M %p %Z")
+```
+
+1j
+```{r}
+j <- ymd_hm("2020-5-5 10:30 AM", tz='America/Puerto_Rico')
+format(j, "%Y-%B-%d %I:%M %p %Z")
+```
+
+2
+
+Using your date of birth (ex Sep 7, 1998) and today’s date calculate the following Write your code in a manner that the code will work on any date after you were born.:
+
+a) Calculate the date of your 64th birthday.
+
+b) Calculate your current age (in years). Hint: Check your age is calculated correctly if your birthday was yesterday and if it were tomorrow!
+
+c) Using your result in part (b), calculate the date of your next birthday.
+
+d) The number of days until your next birthday.
+
+f) The number of months and days until your next birthday.
+
+2a
+```{r}
+dob <- make_date(year = 2005, month = 12, day = 29)
+dob + years(64)
+```
+
+
+2b
+```{r}
+current <- lubridate::today()
+current_age = interval(dob, current)
+as.period(current_age)
+```
+
+
+2c
+```{r}
+nextbd <- make_date(year = 2026, month = 12, day = 29)
+bday = interval(current, nextbd)
+as.period(bday)
+```
+
+
+2d
+```{r}
+as.period(bday, unit = 'days')
+```
+
+
+2e
+```{r}
+p <- as.period(bday)
+paste(month(p), "months and", day(p), "days")
+```
+
+
+3
+```{r}
+call <- ymd_hms("2025-05-08 15:00:00", tz = "America/Phoenix")
+format(call, tz = "Pacific/Auckland")
+```

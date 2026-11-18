@@ -1,0 +1,116 @@
+---
+title: "Homework3"
+author: "Corey Ingram"
+date: "2026-10-16"
+output: pdf_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(microbenchmark)
+```
+
+Exercise 1
+Write a function that calculates the density function of a Uniform continuous variable on the interval (a,b). 
+
+1a
+```{r}
+duniform <- function(x, a, b){
+  if(x >= a & x <= b){
+    return(1/(b - a))
+  }else{
+    return(0)
+  }
+}
+
+duniform(1, 2, 3)
+duniform(2, 1, 3)
+duniform(4, 1, 3)
+```
+
+1b
+
+Next lets improve our function to work correctly for a vector of x values. Modify your function in part (a) so that the core logic uses a for-loop statement and the loop moves through each element of x in succession.
+
+```{r}
+duniform <- function(x, a, b){
+  output <- NULL
+  for(i in 1:length(x)){
+    if(x[i] >= a & x[i] <= b){
+      output <- 1/(b-a)
+    }else{
+      output <- 0
+    }
+  }
+  return(output)
+}
+
+data.frame( x=seq(-1, 12, by=.001) ) %>%
+  mutate( y = duniform(x, 4, 8) ) %>%
+  ggplot( aes(x=x, y=y) ) +
+  geom_step()
+```
+
+
+1c
+```{r}
+microbenchmark::microbenchmark( duniform( seq(-4,12,by=.0001), 4, 8), times=100)
+```
+
+
+1d
+```{r}
+duniform <- function(x, a, b){
+  ifelse(x >= a & x <= b, 1/(b-a), 0)
+}
+microbenchmark::microbenchmark( duniform( seq(-4,12,by=.0001), 4, 8), times=100)
+```
+
+1e
+The ifelse is much faster than the for loop and it was also easier to write.
+
+2
+```{r}
+duniform <- function(x, a = 0, b = 1){
+  ifelse(x >= a & x <= b, 1/(b-a), 0)
+}
+data.frame( x = seq(-1, 2, by = .001) ) %>%
+  mutate( y = duniform(x) ) %>%
+  ggplot( aes(x = x, y = y) ) +
+  geom_step()
+```
+
+3a
+```{r}
+standardize <- function(x){
+  z <- (x - mean(x))/sd(x)
+  return(z)
+}
+```
+
+3b
+```{r}
+data(iris)
+iris.z <- iris %>%
+  mutate(across(where(is.numeric), standardize))
+```
+
+4
+```{r}
+fizzbuzz <- function(n){
+  output <- character(n)          
+  for(i in 1:n){
+    if(i %% 15 == 0){               
+      output[i] <- "Fizz-Buzz"
+    }else if(i %% 3 == 0){
+      output[i] <- "Fizz"
+    }else if(i %% 5 == 0){
+      output[i] <- "Buzz"
+    }else{
+      output[i] <- as.character(i)  
+    }
+  }
+  return(output)
+}
+```

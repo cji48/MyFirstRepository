@@ -1,0 +1,135 @@
+---
+title: "Homework4"
+author: "Corey Ingram"
+date: "2026-10-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(tidyverse)
+```
+
+Exercise 1
+For the following regular expression, explain in words what it matches on. Then add test strings to demonstrate that it in fact does match on the pattern you claim it does. Make sure that your test set of strings has several examples that match as well as several that do not. Show at least two examples that return TRUE and two examples that return FALSE. If you copy the Rmarkdown code for these exercises directly from my source pages, make sure to remove the eval=FALSE from the R-chunk headers.
+
+1a
+```{r}
+strings <- c("Hello", "Table", "Fable", "World")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, 'ab') )
+```
+Any string that contains the lowercase letters ab
+
+1b
+```{r}
+strings <- c("Hello", "Tale", "Flub", "World")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '[ab]') )
+```
+Any string containing lowercase a or b
+
+1c
+```{r}
+strings <- c("Apple", "Banana", "bale", "able")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '^[ab]') )
+```
+Any string starting with lowercase a or b.
+
+1d
+```{r}
+strings <- c("1 apple", "Hello", "9 AM", "Code")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '\\d+\\s[aA]') )
+```
+
+Any string that has a digit followed by a whitespace followed by either an uppercase or lowercase a.
+
+1e
+```{r}
+strings <- c("1 day", "9 AM", "3 dollars", "1 apple")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '\\d+\\s*[aA]') )
+```
+Any string that has a digit followed by zero or more whitespaces followed by either an uppercase or lowercase a.
+
+1f
+```{r}
+strings <- c(" ", "Hello", "Posts", " ")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '.*') )
+```
+This gets zero or more repitions of any character.
+
+1f
+```{r}
+strings <- c("aabar", "Hello", "22bar", "Stats")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '^\\w{2}bar') )
+```
+The input must start with 2 of any alphanumeric character followed by bar
+
+1h
+```{r}
+strings <- c("aabar", "foo.bar", "1bar", "xbar")
+data.frame( string = strings ) %>%
+  mutate( result = str_detect(string, '(foo\\.bar)|(^\\w{2}bar)') )
+```
+
+2
+The following file names were used in a camera trap study. The S number represents the site, P is the plot within a site, C is the camera number within the plot, the first string of numbers is the YearMonthDay and the second string of numbers is the HourMinuteSecond.
+```{r}
+file.names <- c( 'S123.P2.C10_20120621_213422.jpg',
+                 'S10.P1.C1_20120622_050148.jpg',
+                 'S187.P2.C2_20120702_023501.jpg')
+```
+
+Produce a data frame with columns corresponding to the site, plot, camera, year, month, day, hour, minute, and second for these three file names. 
+
+```{r}
+df <- data.frame(
+  Site   = str_extract(file.names, '^S\\d+'),
+  Plot   = str_extract(file.names, 'P\\d+'),
+  Camera = str_extract(file.names, 'C\\d+'),
+  Year   = str_match(file.names, '_(\\d{4})\\d{4}_')[, 2],
+  Month  = str_match(file.names, '_\\d{4}(\\d{2})\\d{2}_')[, 2],
+  Day    = str_match(file.names, '_\\d{4}\\d{2}(\\d{2})_')[, 2],
+  Hour   = str_match(file.names, '_(\\d{2})\\d{4}\\.jpg$')[, 2],
+  Minute = str_match(file.names, '_\\d{2}(\\d{2})\\d{2}\\.jpg$')[, 2],
+  Second = str_match(file.names, '_\\d{4}(\\d{2})\\.jpg$')[, 2]
+)
+
+df
+```
+
+3
+The full text from Lincoln’s Gettysburg Address is given below. It has been provided in a form that includes lots of different types of white space. Your goal is to calculate the mean word length of Lincoln’s Gettysburg Address!
+```{r}
+Gettysburg <- 'Four score and seven years ago our fathers brought forth on this 
+continent, a new nation, conceived in Liberty, and dedicated to the proposition 
+that all men are created equal.
+
+Now we are engaged in a great civil war, testing whether that nation, or any 
+nation so conceived and so dedicated, can long endure. We are met on a great 
+battle-field of that war. We have come to dedicate a portion of that field, as 
+a final resting place for those who here gave their lives that that nation might 
+live. It is altogether fitting and proper that we should do this.
+
+But, in a larger sense, we can not dedicate -- we can not consecrate -- we can 
+not hallow -- this ground. The brave men, living and dead, who struggled here, 
+have consecrated it, far above our poor power to add or detract. The world will 
+little note, nor long remember what we say here, but it can never forget what 
+they did here. It is for us the living, rather, to be dedicated here to the 
+unfinished work which they who fought here have thus far so nobly advanced. It 
+is rather for us to be here dedicated to the great task remaining before us -- 
+that from these honored dead we take increased devotion to that cause for which 
+they gave the last full measure of devotion -- that we here highly resolve that 
+these dead shall not have died in vain -- that this nation, under God, shall 
+have a new birth of freedom -- and that government of the people, by the people, 
+for the people, shall not perish from the earth.'
+
+words <- str_extract_all(Gettysburg, '[A-Za-z]+')[[1]]
+mean(str_length(words))
+```

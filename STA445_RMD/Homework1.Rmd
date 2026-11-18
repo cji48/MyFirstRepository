@@ -1,0 +1,142 @@
+---
+title: "HW1"
+author: "Corey Ingram"
+date: "2026-09-28"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+Exercise 1
+Create a vector of three elements (2,4,6) and name that vector vec_a. Create a second vector, vec_b, that contains (8,10,12). Add these two vectors together and name the result vec_c.
+```{r}
+vec_a <- c(2, 4, 6)
+vec_b <- c(8, 10, 12)
+vec_c <- vec_a + vec_b
+```
+
+Exercise 2
+Create a vector, named vec_d, that contains only two elements (14,20). Add this vector to vec_a. What is the result and what do you think R did (look up the recycling rule using Google)? What is the warning message that R gives you?
+```{r}
+vec_d <- c(14, 20)
+vec_a + vec_d
+```
+I think R reused the first the value of vector d to add to the final element of vector a since the two vectors had different sizes. The error we get is that the object length is not a multiple of the shorter object length.
+
+Exercise 3
+Next add  5 to the vector vec_a. What is the result and what did R do? Why doesn’t in give you a warning message similar to what you saw in the previous problem?
+```{r}
+vec_a + 5
+```
+It adds 5 to each element in vec_a, the reason we don't get an error is because 5 is a scalar.
+
+Exercise 5
+Generate the vector of even numbers {2,4,6,…,20}
+ 
+a) Using the seq() function and
+```{r}
+seq(2, 20, by=2)
+```
+b) Using the a:b shortcut and some subsequent algebra. Hint: Generate a sequence of integers then multiple by 2.
+```{r}
+1:10 * 2
+```
+
+Exercise 6
+Generate a vector of  21 elements that are evenly placed between 0 and 1 using the seq() command and name this vector x.
+```{r}
+x <- seq(0,1, by=(1/20))
+x
+```
+
+Exercise 8
+Generate the vector {2,2,2,2,4,4,4,4,8,8,8,8} using the rep() command. You might need to check the help file for rep(). In particular, look at the optional argument each=.
+
+```{r}
+vec <- c(2, 4, 8)
+rep(vec, each=4)
+```
+Exercise 11
+Create and manipulate a data frame.
+
+a) Create a data.frame named my.trees that has the following columns:
+
+Girth = {8.3, 8.6, 8.8, 10.5, 10.7, 10.8, 11.0}
+Height= {70, 65, 63, 72, 81, 83, 66}
+Volume= {10.3, 10.3, 10.2, 16.4, 18.8, 19.7, 15.6}
+Complete the following without using dplyr functions
+```{r}
+my.trees <- data.frame(
+  Girth = c(8.3, 8.6, 8.8, 10.5, 10.7, 10.8, 11.0),
+  Height= c(70, 65, 63, 72, 81, 83, 66),
+  Volume= c(10.3, 10.3, 10.2, 16.4, 18.8, 19.7, 15.6)
+)
+```
+
+b) Extract the third observation (i.e. the third row)
+```{r}
+my.trees[3,]
+```
+
+c) Extract the Girth column referring to it by name (don’t use a numerical value based on column position).
+```{r}
+my.trees$Girth
+```
+
+d) Print out a data frame of all the observations except for the fourth observation. (i.e. Remove the fourth observation/row.)
+```{r}
+my.trees[-4,]
+```
+
+e) Use the which() command to create a vector of row indices that have a girth greater than 10. Call that vector index.
+```{r}
+index <- which(my.trees$Girth > 10)
+```
+
+f) Use the index vector to create a small data set with just the large girth trees.
+```{r}
+large.trees <- my.trees[index, ]
+```
+g) Use the index vector to create a small data set with just the small girth trees.
+```{r}
+small.trees <- my.trees[-index, ]
+```
+
+Exercise 12
+The following code creates a data.frame and then has two different methods for removing the rows with NA values in the column Grade. Explain the difference between the two.
+
+
+df <- data.frame(name= c('Alice','Bob','Charlie','Daniel'),
+                 Grade = c(6,8,NA,9))
+df[ -which(  is.na(df$Grade) ), ]
+df[  which( !is.na(df$Grade) ), ]
+
+The first one has -which, which will subtract the given rows, and in the second call it uses !, which means not. 
+
+Exercise 14
+
+Create and manipulate a list.
+
+a) Create a list named my.test with elements
+
+```{r}
+x = c(4,5,6,7,8,9,10)
+y = c(34,35,41,40,45,47,51)
+slope = 2.82
+p.value = 0.000131
+my.test <- list(X=x, Y=y, Slope=slope, P.Value=p.value)
+```
+
+b) Extract the second element in the list.
+
+```{r}
+my.test[2]
+```
+c) Extract the element named p.value from the list.
+
+```{r}
+my.test$P.Value
+```
